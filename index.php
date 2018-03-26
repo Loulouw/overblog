@@ -73,14 +73,20 @@ function getTitreArticle($doc)
 
 function getComment($doc)
 {
+    $res = array();
     $xpath = new DOMXPath($doc);
     $tbody = $doc->getElementById('ob-comments');
-    $q = 'div[@class="ob-list"]/div/div[@class="ob-comment"]/p[@class="ob-message"]/span';
-    $q2 = 'div[@class="ob-list"]/div[@class="ob-comment"]/p[@class="ob-message"]/span';
-    $entries = $xpath->query($q, $tbody);
-    foreach ($entries as $entry) {
-        echo $entry->nodeValue . "</br>";
+    $q = 'div[@class="ob-list"]/div[@class="ob-comment"]';
+    $q2 = 'div[@class="ob-list"]/div[@class="ob-comment-replies"]/div[@class="ob-comment"]';
+    $entries1 = $xpath->query($q, $tbody);
+    $entries2 = $xpath->query($q2, $tbody);
+    foreach ($entries1 as $e) {
+        array_push($res, $e->ownerDocument->saveHTML($e));
     }
+    foreach ($entries2 as $e) {
+        array_push($res, $e->ownerDocument->saveHTML($e));
+    }
+
 }
 
 $url = "http://ltd-rando68.over-blog.com/";
