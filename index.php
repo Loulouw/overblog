@@ -36,5 +36,12 @@ function url_get_contents($url, $useragent = 'Mozilla/5.0 (Macintosh; Intel Mac 
     return $result;
 }
 
+function getDomDocument($html){
+  $doc = new DOMDocument();
+  	$doc->loadHTML($html);
+    return $doc->saveHTML();
+}
+
 $url = "http://ltd-rando68.over-blog.com/";
-echo url_get_contents($url);
+libxml_use_internal_errors(true);
+var_dump(getDomDocument(url_get_contents($url)));
