@@ -28,13 +28,13 @@ class Commentaire
 
     public function getXml()
     {
-        return '<commentaire>
+        return '<item>
       <auteur>' . $this->_auteur . '</auteur>
       <date>' . $this->_date . '</date>
       <contenu>' . $this->_contenu . '</contenu>
       <titre>' . $this->_titre . '</titre>
       <url>' . $this->_url . '</url>
-    </commentaire>';
+    </item>';
     }
 
 }
@@ -128,41 +128,53 @@ function getComment($doc)
     return $res;
 }
 
-function getAuteurComment($doc){
+function getAuteurComment($doc)
+{
     $res = "NULL";
     $xpath = new DOMXPath($doc);
+    $tbody = $doc->getElementsByTagName('body')->item(0);
     $q = 'div/p[@class="ob-info"]/span[@class="ob-user"]/span[@class="ob-name"]/span';
-    $entries = $xpath->query($q);
-    foreach ($entries as $e){
+    $entries = $xpath->query($q, $tbody);
+    foreach ($entries as $e) {
         $res = $e->nodeValue;
     }
     return $res;
 }
 
-function getDateComment($doc){
+function getDateComment($doc)
+{
     $res = "NULL";
     $xpath = new DOMXPath($doc);
+    $tbody = $doc->getElementsByTagName('body')->item(0);
     $q = 'div/p[@class="ob-info"]/span[@class="ob-user"]/span[@class="ob-date"]';
-    $entries = $xpath->query($q);
-    foreach ($entries as $e){
+    $entries = $xpath->query($q, $tbody);
+    foreach ($entries as $e) {
         $res = $e->nodeValue;
     }
     return $res;
 }
 
-function getContentComment($doc){
+function getContentComment($doc)
+{
     $res = "NULL";
     $xpath = new DOMXPath($doc);
+    $tbody = $doc->getElementsByTagName('body')->item(0);
     $q = 'div/p[@class="ob-message"]/span';
-    $entries = $xpath->query($q);
-    foreach ($entries as $e){
+    $entries = $xpath->query($q, $tbody);
+    foreach ($entries as $e) {
         $res = $e->nodeValue;
     }
     return $res;
 }
 
-function getRss(){
-  return '<?xml version="1.0" encoding="UTF-8" ?>
+function getRss($commentaires)
+{
+    $str = "";
+    foreach ($commentaires as $c) {
+        $str .= $c->getXml();
+    }
+
+    return '<?xml version="1.0" encoding="UTF-8" ?>
   <rss version="2.0">
 
   <channel>
@@ -172,10 +184,9 @@ function getRss(){
     <language>fr-fr</language>
     <managingEditor>Zwawiak Louis</managingEditor>
     <webMaster>Boursier Peter</webMaster>
+' . $str . '
   </channel>
-
-  </rss>
-  ';
+  </rss>';
 }
 
 $url = "http://ltd-rando68.over-blog.com/";
@@ -195,10 +206,10 @@ foreach ($articles as $article) {
         $auteur = getAuteurComment($docC);
         $date = getDateComment($docC);
         $content = getContentComment($docC);
-        array_push($commentaires,new Commentaire($auteur,$date,$content,$titre,$article));
+        array_push($commentaires, new Commentaire($auteur, $date, $content, $titre, $article));
     }
 }
 
-foreach ($commentaires as $c){
-    echo $c->getXml() . "<br><br>";
-}
+echo '<pre>';
+echo getRss($commentaires);
+echo '</pre>';
