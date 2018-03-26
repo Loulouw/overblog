@@ -59,10 +59,9 @@ function getArticle($doc)
 
 function getComment($doc){
   $xpath = new DOMXPath($doc);
-  $tbody = $doc->getElementsByTagName('body')->item(0);
-  $q = 'div[@class="Content Content--page"]/div[@class="Content-main"]/div[@class="Post Post--OB"]/div[@class="Post-footer"]/div[@class="Post-comments"]/div/div[@class="ob-commentsList"]/div[@class="ob-list"]/div/div[@class="ob-comment"]/p[@class="ob-message"]/span';
-
-  $q2 = 'div[@class="Content Content--page"]/div[@class="Content-main"]/div[@class="Post Post--OB"]/div[@class="Post-footer"]/div[@class="Post-comments"]/div/div[@class="ob-commentsList"]/div[@class="ob-list"]/div[@class="ob-comment"]/p[@class="ob-message"]/span';
+  $tbody = $doc->getElementById('ob-comments');
+  $q = 'div[@class="ob-list"]/div/div[@class="ob-comment"]/p[@class="ob-message"]/span';
+  $q2 = 'div[@class="ob-list"]/div[@class="ob-comment"]/p[@class="ob-message"]/span';
   $entries = $xpath->query($q, $tbody);
   foreach ($entries as $entry) {
       echo $entry->nodeValue . "</br>";
