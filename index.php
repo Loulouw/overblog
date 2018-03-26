@@ -36,12 +36,28 @@ function url_get_contents($url, $useragent = 'Mozilla/5.0 (Macintosh; Intel Mac 
     return $result;
 }
 
-function getDomDocument($html){
-  $doc = new DOMDocument();
-  	$doc->loadHTML($html);
-    return $doc->saveHTML();
+function getDomDocument($html)
+{
+    $doc = new DOMDocument();
+    $doc->loadHTML($html);
+    $doc->saveHTML();
+    return $doc;
 }
+
+function getArticle($doc)
+{
+    $xpath = new DOMXPath($doc);
+    $tbody = $doc->getElementsByTagName('body')->item(0);
+    $q = 'div[@class="Content Content--list"]/div[@class="Content-main"]/div[@class="PostPreview-container"]/div[@class="PostPreview PostPreview--OB"]';
+    $entries = $xpath->query($q, $tbody);
+    foreach ($entries as $entry) {
+        echo "OK<br>";
+    }
+}
+
 
 $url = "http://ltd-rando68.over-blog.com/";
 libxml_use_internal_errors(true);
-var_dump(getDomDocument(url_get_contents($url)));
+$html = url_get_contents($url);
+$doc = getDomDocument($html);
+getArticle($doc);
