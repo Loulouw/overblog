@@ -57,15 +57,30 @@ function getArticle($doc)
     return $tabArticle;
 }
 
-function getComment($doc){
-  $xpath = new DOMXPath($doc);
-  $tbody = $doc->getElementById('ob-comments');
-  $q = 'div[@class="ob-list"]/div/div[@class="ob-comment"]/p[@class="ob-message"]/span';
-  $q2 = 'div[@class="ob-list"]/div[@class="ob-comment"]/p[@class="ob-message"]/span';
-  $entries = $xpath->query($q, $tbody);
-  foreach ($entries as $entry) {
-      echo $entry->nodeValue . "</br>";
-  }
+function getTitreArticle($doc)
+{
+    $nom = "NULL";
+    $xpath = new DOMXPath($doc);
+    $tbody = $doc->getElementsByTagName('body')->item(0);
+    $q = 'div[@class="Content Content--page"]/div[@class="Content-main"]/div[@class="Post Post--OB"]/div[@class="Post-header PostHeader"]/div[@class="PostHeader-content"]/h2';
+    $entries = $xpath->query($q, $tbody);
+    foreach ($entries as $entry) {
+        $nom = $entry->nodeValue;
+    }
+    return $nom;
+}
+
+
+function getComment($doc)
+{
+    $xpath = new DOMXPath($doc);
+    $tbody = $doc->getElementById('ob-comments');
+    $q = 'div[@class="ob-list"]/div/div[@class="ob-comment"]/p[@class="ob-message"]/span';
+    $q2 = 'div[@class="ob-list"]/div[@class="ob-comment"]/p[@class="ob-message"]/span';
+    $entries = $xpath->query($q, $tbody);
+    foreach ($entries as $entry) {
+        echo $entry->nodeValue . "</br>";
+    }
 }
 
 $url = "http://ltd-rando68.over-blog.com/";
@@ -73,8 +88,10 @@ libxml_use_internal_errors(true);
 $html = url_get_contents($url);
 $doc = getDomDocument($html);
 $articles = getArticle($doc);
-foreach($articles as $article){
-  $htmlA = url_get_contents($article);
-  $docA = getDomDocument($htmlA);
-  getComment($docA);
+foreach ($articles as $article) {
+    $htmlA = url_get_contents($article);
+    $docA = getDomDocument($htmlA);
+    echo getTitreArticle($docA) . "<br>";
+    getComment($docA);
+    echo "<br>";
 }
