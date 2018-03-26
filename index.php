@@ -57,11 +57,23 @@ function getArticle($doc)
     return $tabArticle;
 }
 
+function getComment($doc){
+  $xpath = new DOMXPath($doc);
+  $tbody = $doc->getElementsByTagName('body')->item(0);
+  $q = 'div[@class="Content Content--page"]/div[@class="Content-main"]/div[@class="Post Post--OB"]/div[@class="Post-footer"]/div[@class="Post-comments"]/div/div[@class="ob-commentsList"]/div[@class="ob-list"]/div/div[@class="ob-comment"]/p[@class=ob-message]/span';
+  $entries = $xpath->query($q, $tbody);
+  foreach ($entries as $entry) {
+      echo $entry->nodeValue . "</br>";
+  }
+}
 
 $url = "http://ltd-rando68.over-blog.com/";
 libxml_use_internal_errors(true);
 $html = url_get_contents($url);
 $doc = getDomDocument($html);
 $articles = getArticle($doc);
-var_dump($articles);
-
+foreach($articles as $article){
+  $htmlA = url_get_contents($article);
+  $docA = getDomDocument($htmlA);
+  getComment($docA);
+}
