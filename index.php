@@ -1,5 +1,44 @@
 <?php
 
+class Commentaire
+{
+    private $_auteur;
+    private $_date;
+    private $_contenu;
+    private $_titre;
+    private $_url;
+
+    /**
+     * Commentaire constructor.
+     * @param $_auteur
+     * @param $_date
+     * @param $_contenu
+     * @param $_titre
+     * @param $_url
+     */
+    public function __construct($_auteur, $_date, $_contenu, $_titre, $_url)
+    {
+        $this->_auteur = $_auteur;
+        $this->_date = $_date;
+        $this->_contenu = $_contenu;
+        $this->_titre = $_titre;
+        $this->_url = $_url;
+    }
+
+
+    public function getXml()
+    {
+        return '<commentaire>
+      <auteur>' . $this->_auteur . '</auteur>
+      <date>' . $this->_date . '</date>
+      <contenu>' . $this->_contenu . '</contenu>
+      <titre>' . $this->_titre . '</titre>
+      <url>' . $this->_url . '</url>
+    </commentaire>';
+    }
+
+}
+
 function url_get_contents($url, $useragent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.112 Safari/534.30', $headers = false, $follow_redirects = true, $debug = false)
 {
     // initialise the CURL library
@@ -86,18 +125,63 @@ function getComment($doc)
     foreach ($entries2 as $e) {
         array_push($res, $e->ownerDocument->saveHTML($e));
     }
+    return $res;
+}
 
+function getAuteurComment($doc){
+    $res = "NULL";
+    $xpath = new DOMXPath($doc);
+    $q = 'div/p[@class="ob-info"]/span[@class="ob-user"]/span[@class="ob-name"]/span';
+    $entries = $xpath->query($q);
+    foreach ($entries as $e){
+        $res = $e->nodeValue;
+    }
+    return $res;
+}
+
+function getDateComment($doc){
+    $res = "NULL";
+    $xpath = new DOMXPath($doc);
+    $q = 'div/p[@class="ob-info"]/span[@class="ob-user"]/span[@class="ob-date"]';
+    $entries = $xpath->query($q);
+    foreach ($entries as $e){
+        $res = $e->nodeValue;
+    }
+    return $res;
+}
+
+function getContentComment($doc){
+    $res = "NULL";
+    $xpath = new DOMXPath($doc);
+    $q = 'div/p[@class="ob-message"]/span';
+    $entries = $xpath->query($q);
+    foreach ($entries as $e){
+        $res = $e->nodeValue;
+    }
+    return $res;
 }
 
 $url = "http://ltd-rando68.over-blog.com/";
 libxml_use_internal_errors(true);
+
+$commentaires = array();
+
 $html = url_get_contents($url);
 $doc = getDomDocument($html);
 $articles = getArticle($doc);
 foreach ($articles as $article) {
     $htmlA = url_get_contents($article);
     $docA = getDomDocument($htmlA);
-    echo getTitreArticle($docA) . "<br>";
-    getComment($docA);
-    echo "<br>";
+    $titre = getTitreArticle($docA);
+    foreach (getComment($docA) as $c) {
+        $docC = getDomDocument($c);
+        $auteur = getAuteurComment($docC);
+        $date = getDateComment($docC);
+        $content = getContentComment($docC);
+        array_push($commentaires,new Commentaire($auteur,$date,$content,$titre,$article));
+    }
+}
+
+foreach ($commentaires as $c){
+    echo $c->getXml() . "<br><br>";
 }
