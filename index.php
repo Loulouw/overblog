@@ -89,6 +89,23 @@ function getComment($doc)
 
 }
 
+function getRss(){
+  return '<?xml version="1.0" encoding="UTF-8" ?>
+  <rss version="2.0">
+
+  <channel>
+    <title>TP7 Structuration de document</title>
+    <link>https://www.w3schools.com</link>
+    <description>TP7 Author Boursier - Zwawiak</description>
+    <language>fr-fr</language>
+    <managingEditor>Zwawiak Louis</managingEditor>
+    <webMaster>Boursier Peter</webMaster>
+  </channel>
+
+  </rss>
+  ';
+}
+
 $url = "http://ltd-rando68.over-blog.com/";
 libxml_use_internal_errors(true);
 $html = url_get_contents($url);
