@@ -46,13 +46,15 @@ function getDomDocument($html)
 
 function getArticle($doc)
 {
+    $tabArticle = array();
     $xpath = new DOMXPath($doc);
     $tbody = $doc->getElementsByTagName('body')->item(0);
-    $q = 'div[@class="Content Content--list"]/div[@class="Content-main"]/div[@class="PostPreview-container"]/div[@class="PostPreview PostPreview--OB"]';
+    $q = 'div[@class="Content Content--list"]/div[@class="Content-main"]/div[@class="PostPreview-container"]/div[@class="PostPreview PostPreview--OB"]/div[@class="PostPreview-content"]/h2/a/@href';
     $entries = $xpath->query($q, $tbody);
     foreach ($entries as $entry) {
-        echo "OK<br>";
+        array_push($tabArticle, $entry->nodeValue);
     }
+    return $tabArticle;
 }
 
 
@@ -60,4 +62,6 @@ $url = "http://ltd-rando68.over-blog.com/";
 libxml_use_internal_errors(true);
 $html = url_get_contents($url);
 $doc = getDomDocument($html);
-getArticle($doc);
+$articles = getArticle($doc);
+var_dump($articles);
+
