@@ -8,6 +8,19 @@
 
 class Commentaire
 {
+  private $_auteur;
+  private $_date;
+  private $_contenu;
+  private $_titre;
+  private $_url;
 
-
+  public function getXml(){
+    return '<commentaire>
+      <auteur>' . $this->_auteur . '</auteur>
+      <date>' . $this->_date . '</date>
+      <contenu>' . $this->_contenu . '</contenu>
+      <titre>' . $this->_titre . '</titre>
+      <url>' . $this->_url . '</url>
+    </commentaire>';
+  }
 }
