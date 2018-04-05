@@ -178,7 +178,7 @@ function getRss($commentaires)
   <channel>
     <title>TP7 Structuration de document</title>
     <link>https://www.w3schools.com</link>
-    <description>TP7 Author Boursier - Zwawiak</description>
+    <description>TP7 Structuration de document - Boursier - Zwawiak</description>
     <language>fr-fr</language>
 ' . $str . '
   </channel>
