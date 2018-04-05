@@ -29,11 +29,11 @@ class Commentaire
     public function getXml()
     {
         return '<item>
-      <auteur>' . $this->_auteur . '</auteur>
-      <date>' . $this->_date . '</date>
-      <contenu>' . $this->_contenu . '</contenu>
-      <titre>' . $this->_titre . '</titre>
-      <url>' . $this->_url . '</url>
+      <author>' . $this->_auteur . '</author>
+      <pubDate>' . $this->_date . '</pubDate>
+      <description>' . $this->_contenu . '</description>
+      <title>' . $this->_titre . '</title>
+      <link>' . $this->_url . '</link>
     </item>';
     }
 
@@ -170,9 +170,7 @@ function getContentComment($doc)
 function getRss($commentaires)
 {
     $str = "";
-    foreach ($commentaires as $c) {
-        $str .= $c->getXml();
-    }
+    $str .= $commentaires->getXml();
 
     return '<?xml version="1.0" encoding="UTF-8" ?>
   <rss version="2.0">
@@ -182,8 +180,6 @@ function getRss($commentaires)
     <link>https://www.w3schools.com</link>
     <description>TP7 Author Boursier - Zwawiak</description>
     <language>fr-fr</language>
-    <managingEditor>Zwawiak Louis</managingEditor>
-    <webMaster>Boursier Peter</webMaster>
 ' . $str . '
   </channel>
   </rss>';
@@ -210,6 +206,5 @@ foreach ($articles as $article) {
     }
 }
 
-echo '<pre>';
-echo getRss($commentaires);
-echo '</pre>';
+header('Content-Type: application/rss+xml; charset=utf-8');
+echo getRss($commentaires[0]);
